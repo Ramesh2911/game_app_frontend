@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import login from '../../assets/images/login.png';
-// import {
-// 	API_ADMIN_AUTHENTICATE
-// }
-// 	from '../../config/Api';
+import {
+	API_ADMIN_AUTHENTICATE
+}
+	from '../../config/Api';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 
 function Login(props) {
 	const navigate = useNavigate();
@@ -42,109 +41,50 @@ function Login(props) {
 		return isValid;
 	};
 
-
-	const handleSubmit = async (e) => {
+	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		// Validate form inputs
 		if (!validateForm()) {
 			return;
 		}
 
-		// Prepare the payload
 		const payload = {
 			phone: formValues.phone,
 			password: formValues.password,
 		};
 
-		try {
-			// Make the API call
-			const response = await axios.post("http://127.0.0.1:3000/api/admin-authenticate", payload, {
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
+		props
+			.callRequest("POST", API_ADMIN_AUTHENTICATE, false, payload)
+			.then(({ data: { data } }) => {
 
-			// Handle successful response
-			if (response.data) {
-				console.log("API Response:", response.data);
-				const userData = response.data.data;  // The user data part
+				if (!data) {
+					throw new Error("Invalid API response structure");
+				}
 
-				// Save the user data in localStorage
-				localStorage.setItem("user", JSON.stringify(userData));  // Store all user data as a JSON string
-				localStorage.setItem("token", userData.token);  // Store token separately
-				localStorage.setItem("tokenExpiredOn", userData.token_expired_on);
+				localStorage.setItem("id", data.id);
+				localStorage.setItem("name", data.name);
+				localStorage.setItem("email", data.email);
+				localStorage.setItem("phone", data.phone);
+				localStorage.setItem("token", data.token);
+				localStorage.setItem("tokenExpiredOn", data.token_expired_on);
+
 				navigate("/dashboard");
-			}
-		} catch (err) {
-			// Detailed error handling
-			if (err.message === "Network Error") {
-				console.error("Network Error: Cannot connect to the server");
-				toast.error("Network Error: Cannot connect to the server", {
-					position: "top-right",
-					autoClose: 5000,
-				});
-			} else if (err.response) {
-				// Server responded with a status other than 2xx
-				console.error("API Error:", err.response.data.message);
-				toast.error(err.response.data.message || "An error occurred on the server", {
-					position: "top-right",
-					autoClose: 5000,
-				});
-			} else {
-				// Unknown error
-				console.error("Unknown Error:", err.message);
-				toast.error("An unknown error occurred", {
-					position: "top-right",
-					autoClose: 5000,
-				});
-			}
-		}
+			})
+			.catch((err) => {
+				if (err.message === "Network Error") {
+					toast.error(`${err.message}`, {
+						position: toast.POSITION.TOP_RIGHT,
+						autoClose: 5000,
+					});
+				} else {
+					const errorMessage = err?.response?.data?.message || "An unexpected error occurred";
+					toast.error(errorMessage, {
+						position: toast.POSITION.TOP_RIGHT,
+						autoClose: 5000,
+					});
+				}
+			});
 	};
-
-
-	// const handleSubmit = (e) => {
-	// 	e.preventDefault();
-
-	// 	if (!validateForm()) {
-	// 		return;
-	// 	}
-
-	// 	const payload = {
-	// 		phone: formValues.phone,
-	// 		password: formValues.password,
-	// 	};
-
-	// 	props
-	// 		.callRequest("POST", API_ADMIN_AUTHENTICATE, false, payload)
-	// 		.then(({ data }) => {
-	// 			console.log(data, 'data');
-	// 			//  localStorage.setItem("token", data.token);
-	// 			//  localStorage.setItem("tokenExpiredOn", data.token_expired_on);
-	// 			//  localStorage.setItem("user", data.user);
-
-	// 			//  const userRole = JSON.parse(data.user).role.role_name;
-	// 			//  localStorage.setItem("userRole", userRole);
-
-
-	// 			navigate("/dashboard");
-	// 		})
-	// 		.catch((err) => {
-	// 			if (err.message === "Network Error") {
-	// 				toast.error(`${err.message}`, {
-	// 					position: toast.POSITION.TOP_RIGHT,
-	// 					autoClose: 5000,
-	// 				});
-	// 			} else {
-	// 				toast.error(`${err.response.data.message}`, {
-	// 					position: toast.POSITION.TOP_RIGHT,
-	// 					autoClose: 5000,
-	// 				});
-	// 			}
-	// 		});
-	// };
-
-
 
 	return (
 		<div className="page-wraper">

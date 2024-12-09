@@ -20,8 +20,12 @@ export const MenuList = [
         iconStyle: <i className="flaticon-381-television" />,
         content: [
             {
-                title: 'Profile',
-                to: 'app-profile'
+                title: 'Create Game',
+                to: 'create-game'
+            },
+            {
+                title: 'All Game',
+                to: 'list-game'
             },
         ],
     },

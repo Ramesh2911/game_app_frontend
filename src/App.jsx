@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import Common from './helpers/common';
 import useAuth from "./hooks/useAuth";
 import "./assets/css/style.css";
+import 'rsuite/dist/rsuite-no-reset.min.css';
 import AuthRoutes from './jsx/router/auth/AuthRoutes';
 
 function App(props) {
