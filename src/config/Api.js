@@ -5,3 +5,13 @@ export const API_DOMAIN = VITE_API_DOMAIN + "api/";
 
 export const API_ADMIN_REGISTER = API_DOMAIN + "admin-register";
 export const API_ADMIN_AUTHENTICATE = API_DOMAIN + "admin-authenticate";
+
+//Game
+export const API_CREATE_GAME = API_DOMAIN + "create-game";
+export const API_GAME_LIST = API_DOMAIN + "game-list";
+export const API_GAME_TYPE_LIST = API_DOMAIN + "game-type-list";
+export const API_CREATE_SLOT = API_DOMAIN + "create-slot";
+
+//Wallet
+export const API_USER_WALLET_INFO = API_DOMAIN + "user-wallet-info";
+export const API_WALLET_STATUS_UPDATE = API_DOMAIN + "wallet-status-update";

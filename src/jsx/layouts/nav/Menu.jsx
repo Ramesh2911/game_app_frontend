@@ -27,6 +27,10 @@ export const MenuList = [
                 title: 'All Game',
                 to: 'list-game'
             },
+            {
+                title: 'Create Slot',
+                to: 'create-slot'
+            },
         ],
     },
 
@@ -37,8 +41,8 @@ export const MenuList = [
         iconStyle: <i className="flaticon-381-controls-3" />,
         content: [
             {
-                title: 'RechartJs',
-                to: 'chart-rechart',
+                title: 'List Wallet',
+                to: 'list-wallet',
             },
         ]
     },
