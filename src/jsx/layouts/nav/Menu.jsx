@@ -44,6 +44,10 @@ export const MenuList = [
                 title: 'List Wallet',
                 to: 'list-wallet',
             },
+            {
+                title: 'List Withdrawal',
+                to: 'list-withdrawal',
+            },
         ]
     },
     //Result

@@ -15,3 +15,4 @@ export const API_CREATE_SLOT = API_DOMAIN + "create-slot";
 //Wallet
 export const API_USER_WALLET_INFO = API_DOMAIN + "user-wallet-info";
 export const API_WALLET_STATUS_UPDATE = API_DOMAIN + "wallet-status-update";
+export const API_USER_WITHDRAWAL_INFO = API_DOMAIN + "user-withdrawal-info";

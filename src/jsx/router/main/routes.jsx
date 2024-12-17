@@ -10,6 +10,7 @@ import AddSlot from '../../components/Game/AddSlot';
 
 //Wallet
 import ListWallet from '../../components/Wallet/ListWallet';
+import ListWithdrawal from '../../components/Wallet/ListWithdrawal';
 
 
 const AllRoutes = (props) => {
@@ -34,6 +35,10 @@ const AllRoutes = (props) => {
         {
             url: "list-wallet",
             component: <ListWallet {...props} />
+        },
+        {
+            url: "list-withdrawal",
+            component: <ListWithdrawal {...props} />
         },
         {
             url: "/",
