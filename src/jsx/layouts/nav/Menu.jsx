@@ -57,8 +57,12 @@ export const MenuList = [
         iconStyle: <i className="flaticon-381-internet" />,
         content: [
             {
-                title: 'Accordion',
-                to: 'ui-accordion',
+                title: 'Result',
+                to: 'create-result',
+            },
+            {
+                title: 'Result List',
+                to: 'list-result',
             },
         ]
     },
