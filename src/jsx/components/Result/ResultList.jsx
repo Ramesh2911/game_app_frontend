@@ -4,8 +4,10 @@ import DataTable from 'react-data-table-component';
 import DataTableSettings from '../../../helpers/DataTableSettings';
 import { Col, Form, Row } from 'react-bootstrap';
 import CommonLoader from '../loader/CommonLoader';
-import { API_GAME_LIST, API_GAME_TYPE_NAME, API_RESULT_LIST, API_SLOT_INFO } from '../../../config/Api';
+import { API_GAME_LIST, API_GAME_TYPE_NAME, API_RESULT_LIST, API_RESULT_UPDATE, API_SLOT_INFO } from '../../../config/Api';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const ResultList = (props) => {
 
@@ -39,6 +41,8 @@ const ResultList = (props) => {
    const [listData, setListData] = useState([]);
    const [typeName, setTypeName] = useState([]);
    const [slotInfo, setSlotInfo] = useState([]);
+   const [editRow, setEditRow] = useState(null);
+   const [editedWinnerValue, setEditedWinnerValue] = useState('');
    const searchParam = [
       "game_id",
       "game_type_id",
@@ -133,6 +137,55 @@ const ResultList = (props) => {
          });
    };
 
+   const handleCancelClick = () => {
+      setEditRow(null);
+   };
+
+   const handleUpdateClick = async (row) => {
+
+      const headers = {
+         "Content-Type": "application/json",
+         "login": login,
+         "access_token": accessToken,
+      };
+
+      const payload = {
+         result_id: row.result_id,
+         winner_value: editedWinnerValue,
+      };
+
+      try {
+         const response = await axios({
+            method: "PUT",
+            url: API_RESULT_UPDATE,
+            headers: headers,
+            data: payload,
+         });
+
+         if (response.status === 200) {
+            Swal.fire({
+               position: "top-end",
+               icon: "success",
+               title: "Row updated successfully!",
+               showConfirmButton: false,
+               timer: 1500,
+            });
+            setEditRow(null);
+            fetchResultData();
+         } else {
+            Swal.fire({
+               position: "top-end",
+               icon: "error",
+               title: "Failed to update row",
+               showConfirmButton: true,
+            });
+         }
+      } catch (error) {
+         console.error('Error:', error.response || error.message || error);
+      }
+   };
+
+
    const columns = [
       {
          name: <h5>Game Name</h5>,
@@ -151,6 +204,11 @@ const ResultList = (props) => {
          sortable: true,
       },
       {
+         name: <h5>Date</h5>,
+         selector: (row) => row.result_date,
+         sortable: true,
+      },
+      {
          name: <h5>Slot</h5>,
          selector: (row) => {
             const slotTime = slotInfo.find((result) => result.slot_id === row.slot_id);
@@ -160,10 +218,59 @@ const ResultList = (props) => {
       },
       {
          name: <h5>Winner No.</h5>,
-         selector: (row) => row.winner_value,
+         selector: (row) => {
+            if (editRow === row.result_id) {
+               return (
+                  <Form.Control
+                     type="text"
+                     value={editedWinnerValue}
+                     onChange={(e) => setEditedWinnerValue(e.target.value)}
+                  />
+               );
+            }
+            return row.winner_value;
+         },
          sortable: true,
       },
+      {
+         name: <h5>Action</h5>,
+         center: true,
+         cell: (row) => (
+            <div>
+               {editRow === row.result_id ? (
+                  <>
+                     <button
+                        onClick={() => handleUpdateClick(row)}
+                        className="btn btn-success btn-sm"
+                     >
+                        Update
+                     </button>
+                     <button
+                        onClick={handleCancelClick}
+                        className="btn btn-danger btn-sm"
+                        style={{ marginLeft: "10px" }}
+                     >
+                        Cancel
+                     </button>
+                  </>
+               ) : (
+                  <Link>
+                     <i
+                        className="la la-edit"
+                        style={{ fontSize: "30px", cursor: "pointer" }}
+                        onClick={() => handleEditClick(row)}
+                     ></i>
+                  </Link>
+               )}
+            </div>
+         ),
+      },
    ];
+
+   const handleEditClick = (row) => {
+      setEditRow(row.result_id);
+      setEditedWinnerValue(row.winner_value);
+   };
 
    const subHeaderComponentMemo = useMemo(() => {
       return (

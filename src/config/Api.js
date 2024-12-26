@@ -25,3 +25,4 @@ export const API_USER_WITHDRAWAL_INFO = API_DOMAIN + "user-withdrawal-info";
 export const API_SLOT_LIST = API_DOMAIN + "slot-list";
 export const API_RESULT_CREATE = API_DOMAIN + "result-create";
 export const API_RESULT_LIST = API_DOMAIN + "result-list";
+export const API_RESULT_UPDATE = API_DOMAIN + "result-update";

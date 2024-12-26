@@ -82,10 +82,10 @@ const ListGame = (props) => {
          cell: (row) => (
             <>
                <Link >
-                  <i className="la la-edit"></i>
+                  <i className="la la-edit" style={{ fontSize: '30px' }}></i>
                </Link>
                <Link >
-                  <i className="la la-trash"></i>
+                  <i className="la la-trash" style={{ fontSize: '30px' }}></i>
                </Link>
             </>
          ),

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PageTitle from '../../layouts/PageTitle';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Form, Row } from 'react-bootstrap';
 import { Button, Input } from 'rsuite';
 import Select from "react-select";
 import {
@@ -20,6 +20,7 @@ const Result = (props) => {
    const initialValues = {
       game_id: "",
       game_type_id: "",
+      result_date: "",
       slot_id: [],
       winner_values: {},
    };
@@ -142,6 +143,11 @@ const Result = (props) => {
             slot_id: selectedSlots,
             winner_values: updatedWinnerValues,
          });
+      } else if (field === "result_date") {
+         setFormValues({
+            ...formValues,
+            result_date: e.target.value,
+         });
       }
    };
 
@@ -156,7 +162,7 @@ const Result = (props) => {
    };
 
    const validateForm = () => {
-      const { game_id, game_type_id, slot_id, winner_values } = formValues;
+      const { game_id, game_type_id, slot_id, winner_values, result_date } = formValues;
       const errors = {};
       let isValid = true;
 
@@ -167,6 +173,10 @@ const Result = (props) => {
       if (!game_type_id) {
          isValid = false;
          errors.game_type_id = "Game type name is required.";
+      }
+      if (!result_date) {
+         isValid = false;
+         errors.result_date = "Date is required.";
       }
       if (!slot_id.length) {
          isValid = false;
@@ -198,6 +208,7 @@ const Result = (props) => {
          game_type_id: formValues.game_type_id,
          slot_id: formValues.slot_id,
          winner_values: formValues.winner_values,
+         result_date: formValues.result_date,
       };
 
       try {
@@ -215,9 +226,9 @@ const Result = (props) => {
                showConfirmButton: false,
                timer: 1500,
             });
-            // setTimeout(() => {
-            //    navigate("/list-game");
-            // }, 1500);
+            setTimeout(() => {
+               navigate("/list-game");
+            }, 1500);
          } else {
             Swal.fire({
                position: "top-end",
@@ -278,6 +289,24 @@ const Result = (props) => {
                            </div>
                         </div>
                      </div>
+                     <div className="row">
+                        <div className="col-lg-4 col-md-4 col-sm-4">
+                           <Form.Group className="mb-3" controlId="result_date">
+                              <Form.Label>Date</Form.Label>
+                              <Form.Control
+                                 size="sm"
+                                 type="date"
+                                 name='result_date'
+                                 value={formValues.result_date ?? ""}
+                                 onChange={(e) => handleChange(e, "result_date")}
+                                 max={new Date().toISOString().split('T')[0]}
+                              />
+                              <div className="text-danger fs-12">
+                                 {!formValues.result_date && errors.result_date}
+                              </div>
+                           </Form.Group>
+                        </div>
+                     </div>
 
                      <div className="row mt-4">
                         {formValues.slot_id.map((slotId) => {
@@ -306,6 +335,7 @@ const Result = (props) => {
                   </div>
                </div>
             </Col>
+
          </Row>
       </>
    );
