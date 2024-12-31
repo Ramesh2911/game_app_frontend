@@ -23,7 +23,7 @@ const AddGame = (props) => {
    const initialValues = {
       game_name: "",
       game_pic: null,
-      game_type_name: "",
+      game_type_name: [],
       min_entry_fee: "",
       max_entry_fee: "",
       noOf_item_choose: "",
@@ -35,12 +35,15 @@ const AddGame = (props) => {
 
    const [formValues, setFormValues] = useState(initialValues);
    const [errors, setErrors] = useState({});
-   const [selectedGameType, setSelectedGameType] = useState("");
+   const [selectedGameTypes, setSelectedGameTypes] = useState([]);
 
    useEffect(() => {
-      const numberChoice = getNumberChoice();
-      handleChange("noOf_item_choose", numberChoice);
-   }, [selectedGameType]);
+      const numberChoices = getNumberChoices(selectedGameTypes);
+      setFormValues((prevValues) => ({
+         ...prevValues,
+         noOf_item_choose: numberChoices,
+      }));
+   }, [selectedGameTypes]);
 
    const handleChange = (name, value) => {
       if (name === "game_pic" && value instanceof File) {
@@ -61,24 +64,32 @@ const AddGame = (props) => {
       }));
    };
 
-   const handleGameTypeChange = (selectedOption) => {
-      const gameTypeName = selectedOption ? selectedOption.value : "";
-      setSelectedGameType(gameTypeName);
-      handleChange("game_type_name", gameTypeName);
+   const handleGameTypeChange = (selectedOptions) => {
+      const gameTypeNames = selectedOptions ? selectedOptions.map(option => option.value) : [];
+      setSelectedGameTypes(gameTypeNames);
+      handleChange("game_type_name", gameTypeNames);
    };
 
-   const getNumberChoice = () => {
-      switch (selectedGameType) {
-         case "SINGLE":
-            return 1;
-         case "PATTI":
-            return 3;
-         case "JURI":
-            return 2;
-         default:
-            return "";
-      }
+   const getNumberChoices = (gameTypes) => {
+      const choices = [];
+      gameTypes.forEach(type => {
+         switch (type) {
+            case "SINGLE":
+               choices.push({ label: "Number Choice - Single", value: 1 });
+               break;
+            case "PATTI":
+               choices.push({ label: "Number Choice - Patti", value: 3 });
+               break;
+            case "JURI":
+               choices.push({ label: "Number Choice - Juri", value: 2 });
+               break;
+            default:
+               break;
+         }
+      });
+      return choices;
    };
+
 
    const validateForm = () => {
       const
@@ -231,6 +242,7 @@ const AddGame = (props) => {
                               <Select
                                  options={gameTypeOptions}
                                  isClearable={true}
+                                 isMulti={true}
                                  onChange={handleGameTypeChange}
                               />
                               <div className="text-danger fs-12">
@@ -278,18 +290,23 @@ const AddGame = (props) => {
                               </div>
                            </div>
                         </div>
-                        <div className="col-lg-4 col-md-4 col-sm-4">
+                        <div className="col-lg-4 col-md-6 col-sm-12">
                            <div className="form-group">
-                              <label className="form-label" htmlFor="noOf_item_choose">
-                                 Number Choice
-                              </label>
-                              <Input
-                                 type="text"
-                                 name="noOf_item_choose"
-                                 disabled={selectedGameType === ""}
-                                 value={getNumberChoice()}
-                                 readOnly
-                              />
+                              {selectedGameTypes.map((type) => {
+                                 const label = `Number Choice - ${type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()}`;
+                                 const value = type === "SINGLE" ? 1 : type === "PATTI" ? 3 : 2;
+                                 return (
+                                    <div key={type} className="form-group mb-3">
+                                       <label className="form-label">{label}</label>
+                                       <Input
+                                          type="text"
+                                          name="noOf_item_choose"
+                                          value={value}
+                                          readOnly
+                                       />
+                                    </div>
+                                 );
+                              })}
                            </div>
                         </div>
                      </div>
